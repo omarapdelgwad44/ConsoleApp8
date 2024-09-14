@@ -1,9 +1,10 @@
-﻿using SQLite;
+﻿namespace SQLite;
 
 public class Invoice
 {
     public int Id { get; set; }
     public string Description { get; set; }
 
-    public ICollection<Item> Items { get; set; }
+    // Navigation property for the many-to-many relationship
+    public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
 }

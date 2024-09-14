@@ -1,4 +1,6 @@
-﻿namespace SQLite
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq; // Required for EF Core functionalities
+namespace SQLite
 {
     public class ItemEF : IDataHelper<Item>
     {
@@ -61,7 +63,7 @@
         {
             try
             {
-                return db.Items.ToList();
+                return db.Items.AsNoTracking().ToList();
             }
             catch (Exception ex)
             {

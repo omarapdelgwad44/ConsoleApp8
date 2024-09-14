@@ -11,43 +11,50 @@ namespace SQLite
     {
         static void Main(string[] args)
         {
-
+            InvoiceEF Ie =new InvoiceEF();
+            // Creating a new invoice
             IDataHelper<Item> dataHelper = new ItemEF();
-            IDataHelper<Invoice> invoiceDataHelper = new InvoiceEF();
-
             // Adding a new item
 
-            //Console.WriteLine(dataHelper.Add(new Item { Id = 77, Name = "v7", initialPrice = 10, pricePrice = 17, wholesalePrice = 15, Quantity = 50 }));
-            // Console.WriteLine(dataHelper.Add(new Item { Id = 44, Name = "V", initialPrice = 10, pricePrice = 17, wholesalePrice = 15, Quantity = 40 }));
-            //Console.WriteLine(dataHelper.Add(new Item { Id = 55, Name = "I", initialPrice = 50, pricePrice = 60, wholesalePrice = 55, Quantity = 100 }));
+           // dataHelper.Delete(55);
+           // dataHelper.Delete(44);
+          //  dataHelper.Delete(77);
+            //Console.WriteLine(dataHelper.Add(new Item { Id = 1, Name = "chips", InitialPrice = 10, RetailPrice = 17, WholesalePrice = 15, Quantity = 50 }));
+            //Console.WriteLine(dataHelper.Add(new Item { Id = 2, Name = "tiger", InitialPrice = 10, RetailPrice = 17, WholesalePrice = 15, Quantity = 50 }));
+            //Console.WriteLine(dataHelper.Add(new Item { Id = 3, Name = "row", InitialPrice = 50, RetailPrice = 60, WholesalePrice = 55, Quantity = 25 }));
             var items = dataHelper.GetAllData();
-            foreach (var item in items)
-            {
-                Console.WriteLine($"Item ID: {item.Id}, Name: {item.Name},intialPrice:  {item.initialPrice}, picePrice: {item.pricePrice},wholesalePrice: {item.wholesalePrice},Quantity: {item.Quantity},{item}");
+
+            foreach (var item in items) {
+                Console.WriteLine($"Item ID: {item.Id}, Name: {item.Name},intialPrice:  {item.InitialPrice}, picePrice: {item.RetailPrice},wholesalePrice: {item.WholesalePrice},Quantity: {item.Quantity},{item}");
             }
-            Console.WriteLine(invoiceDataHelper.Add(new Invoice
+
+            var newInvoice = new Invoice { Description = "Customer Purchase" };
+
+            // List of item IDs to add to the invoice
+            List<int> itemIds = new List<int> { 1,2,3 };  // Example item IDs
+
+            // Corresponding quantities of the items (ensure they don't exceed available stock)
+            List<int> itemQuantities = new List<int> { 1,2,1};  // Quantities of items to reduce
+
+            // Add invoice with items and reduce their stock
+            int result = Ie.AddInvoiceWithItemIds(newInvoice, itemIds, itemQuantities);
+
+            if (result == 1)
             {
-                Id = 10111,
-                Description = "I1",
-                Items = items
-                //     Items = items // Associate the items with the new invoice
-            }));
-            // Fetching all items
-            var invoices = invoiceDataHelper.GetAllData();
-            foreach (var invoice in invoices)
+                Console.WriteLine("Invoice added successfully and stock updated.");
+            }
+            else
             {
-               
-              Console.WriteLine($"Item ID: {invoice.Id}, Description: {invoice.Description}");
-                foreach (var item in invoice.Items)
-                {
-                    Console.WriteLine(item.Name);
-                }
-                /* foreach (var item in invoice.Items)
-                  {
-                      Console.WriteLine($"Item ID: {item.Id}, Name: {item.Name},intialPrice:  {item.initialPrice}, picePrice: {item.pricePrice},wholesalePrice: {item.wholesalePrice},Quantity: {item.Quantity}");
-                  }
-              }*/
+                Console.WriteLine("Error adding invoice or insufficient stock.");
+            }
+
+             dataHelper.GetAllData().ToArray();
+
+            foreach (var item in dataHelper.GetAllData())
+            {
+                Console.WriteLine($"Item ID: {item.Id}, Name: {item.Name},intialPrice:  {item.InitialPrice}, picePrice: {item.RetailPrice},wholesalePrice: {item.WholesalePrice},Quantity: {item.Quantity},{item}");
             }
         }
+
+        }
     }
-}

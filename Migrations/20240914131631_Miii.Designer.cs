@@ -3,15 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SQLite;
 
 #nullable disable
 
 namespace ConsoleApp8.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20240913114758_hh")]
-    partial class hh
+    [Migration("20240914131631_Miii")]
+    partial class Miii
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +18,7 @@ namespace ConsoleApp8.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
-            modelBuilder.Entity("Invoice", b =>
+            modelBuilder.Entity("SQLite.Invoice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,19 +33,22 @@ namespace ConsoleApp8.Migrations
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("InvoiceItem", b =>
+            modelBuilder.Entity("SQLite.InvoiceItem", b =>
                 {
-                    b.Property<int>("InvoicesId")
+                    b.Property<int>("InvoiceId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ItemsId")
+                    b.Property<int>("ItemId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("InvoicesId", "ItemsId");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("ItemsId");
+                    b.HasKey("InvoiceId", "ItemId");
 
-                    b.ToTable("InvoiceItem");
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("InvoiceItems");
                 });
 
             modelBuilder.Entity("SQLite.Item", b =>
@@ -55,6 +57,9 @@ namespace ConsoleApp8.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("InitialPrice")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -62,13 +67,10 @@ namespace ConsoleApp8.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("initialPrice")
+                    b.Property<double>("RetailPrice")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("pricePrice")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("wholesalePrice")
+                    b.Property<double>("WholesalePrice")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
@@ -76,19 +78,33 @@ namespace ConsoleApp8.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("InvoiceItem", b =>
+            modelBuilder.Entity("SQLite.InvoiceItem", b =>
                 {
-                    b.HasOne("Invoice", null)
-                        .WithMany()
-                        .HasForeignKey("InvoicesId")
+                    b.HasOne("SQLite.Invoice", "Invoice")
+                        .WithMany("InvoiceItems")
+                        .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SQLite.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsId")
+                    b.HasOne("SQLite.Item", "Item")
+                        .WithMany("InvoiceItems")
+                        .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("SQLite.Invoice", b =>
+                {
+                    b.Navigation("InvoiceItems");
+                });
+
+            modelBuilder.Entity("SQLite.Item", b =>
+                {
+                    b.Navigation("InvoiceItems");
                 });
 #pragma warning restore 612, 618
         }
